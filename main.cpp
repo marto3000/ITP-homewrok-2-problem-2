@@ -2,6 +2,21 @@
 #include <cstring>
 using namespace std;
 
+bool validMap(char** map, int rows, int cols)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			if (!((map[i][j] >= 'a' && map[i][j] <= 'z') || map[i][j] == 'S' || map[i][j] == 'E'))
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 char* findPaths(char** map, int rows, int cols, int maxPathLeng, int& shortesetPathLeng, int currentRow, int currentCol, char* currentPath, bool** marked, char* shortestPath)
 {
 	currentPath[strlen(currentPath) + 1] = '\0';
@@ -174,10 +189,17 @@ int main()
 	abdefghi
 	*/
 	cin.ignore();
-	for (int i = 0; i < rows; i++)
+	do
 	{
-		cin.getline(map[i], cols + 1);
-	}
+		for (int i = 0; i < rows; i++)
+		{
+			cin.getline(map[i], cols + 1);
+		}
+		if (validMap(map, rows, cols))
+		{
+			break;
+		}
+	} while (true);
 
 	shortestPathLeng(map, rows, cols);
 
