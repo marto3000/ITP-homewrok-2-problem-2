@@ -32,25 +32,25 @@ char* findPaths(char** map, int rows, int cols, int maxPathLeng, int& shortesetP
 	}
 	else
 	{
-		if (currentCol - 1 >= 0 && marked[currentRow][currentCol - 1] == false && (map[currentRow][currentCol] == 'S' || (map[currentRow][currentCol - 1] == 'E' && map[currentRow][currentCol] == 'z') || (map[currentRow][currentCol - 1] - map[currentRow][currentCol] == 1 || map[currentRow][currentCol - 1] - map[currentRow][currentCol] == 0)))//left
+		if (currentCol - 1 >= 0 && marked[currentRow][currentCol - 1] == false && (map[currentRow][currentCol] == 'S' || (map[currentRow][currentCol - 1] == 'E' && map[currentRow][currentCol] == 'z') || (map[currentRow][currentCol - 1] - map[currentRow][currentCol] >= -1 && map[currentRow][currentCol - 1] - map[currentRow][currentCol] <= 1)))//left
 		{
 			findPaths(map, rows, cols, maxPathLeng, shortesetPathLeng, currentRow, currentCol - 1, currentPath, marked, shortestPath);
 			currentPath[strlen(currentPath) - 1] = '\0';
 			marked[currentRow][currentCol - 1] = false;
 		}
-		if (currentCol + 1 < cols && marked[currentRow][currentCol + 1] == false && (map[currentRow][currentCol] == 'S' || (map[currentRow][currentCol + 1] == 'E' && map[currentRow][currentCol] == 'z') || (map[currentRow][currentCol + 1] - map[currentRow][currentCol] == 1 || map[currentRow][currentCol + 1] - map[currentRow][currentCol] == 0)))//right
+		if (currentCol + 1 < cols && marked[currentRow][currentCol + 1] == false && (map[currentRow][currentCol] == 'S' || (map[currentRow][currentCol + 1] == 'E' && map[currentRow][currentCol] == 'z') || (map[currentRow][currentCol + 1] - map[currentRow][currentCol] >= -1 && map[currentRow][currentCol + 1] - map[currentRow][currentCol] <= 1)))//right
 		{
 			findPaths(map, rows, cols, maxPathLeng, shortesetPathLeng, currentRow, currentCol + 1, currentPath, marked, shortestPath);
 			currentPath[strlen(currentPath) - 1] = '\0';
 			marked[currentRow][currentCol + 1] = false;
 		}
-		if (currentRow - 1 >= 0 && marked[currentRow - 1][currentCol] == false && (map[currentRow][currentCol] == 'S' || (map[currentRow - 1][currentCol] == 'E' && map[currentRow][currentCol] == 'z') || (map[currentRow - 1][currentCol] - map[currentRow][currentCol] == 1 || map[currentRow - 1][currentCol] - map[currentRow][currentCol] == 0)))//up
+		if (currentRow - 1 >= 0 && marked[currentRow - 1][currentCol] == false && (map[currentRow][currentCol] == 'S' || (map[currentRow - 1][currentCol] == 'E' && map[currentRow][currentCol] == 'z') || (map[currentRow - 1][currentCol] - map[currentRow][currentCol] >= -1 && map[currentRow - 1][currentCol] - map[currentRow][currentCol] <= 1)))//up
 		{
 			findPaths(map, rows, cols, maxPathLeng, shortesetPathLeng, currentRow - 1, currentCol, currentPath, marked, shortestPath);
 			currentPath[strlen(currentPath) - 1] = '\0';
 			marked[currentRow - 1][currentCol] = false;
 		}
-		if (currentRow + 1 < rows && marked[currentRow + 1][currentCol] == false && (map[currentRow][currentCol] == 'S' || (map[currentRow + 1][currentCol] == 'E' && map[currentRow][currentCol] == 'z') || (map[currentRow + 1][currentCol] - map[currentRow][currentCol] == 1 || map[currentRow + 1][currentCol] - map[currentRow][currentCol] == 0)))//down
+		if (currentRow + 1 < rows && marked[currentRow + 1][currentCol] == false && (map[currentRow][currentCol] == 'S' || (map[currentRow + 1][currentCol] == 'E' && map[currentRow][currentCol] == 'z') || (map[currentRow + 1][currentCol] - map[currentRow][currentCol] >= -1 && map[currentRow + 1][currentCol] - map[currentRow][currentCol] <= 1)))//down
 		{
 			findPaths(map, rows, cols, maxPathLeng, shortesetPathLeng, currentRow + 1, currentCol, currentPath, marked, shortestPath);
 			currentPath[strlen(currentPath) - 1] = '\0';
@@ -76,7 +76,7 @@ void resetValues(char* currentPath, bool** marked, int rows, int cols)
 	}
 }
 
-int shortestPathLeng(char** map, int rows, int cols)
+void shortestPath(char** map, int rows, int cols)
 {
 	int maxPathLeng = rows * cols + 1;
 	int shortesetPathLeng = rows * cols + 1;
@@ -104,6 +104,11 @@ int shortestPathLeng(char** map, int rows, int cols)
 	//
 
 	findPaths(map, rows, cols, maxPathLeng, shortesetPathLeng, 0, 0, currentPath, marked, shortestPath);
+	if (shortesetPathLeng == rows * cols + 1)
+	{
+		cout << "No path found!" << endl;
+		return;
+	}
 	
 	resetValues(currentPath, marked, rows, cols);
 
@@ -163,7 +168,6 @@ int shortestPathLeng(char** map, int rows, int cols)
 	marked = nullptr;
 	//
 
-	return 0;
 }
 
 int main()
@@ -201,7 +205,7 @@ int main()
 		}
 	} while (true);
 
-	shortestPathLeng(map, rows, cols);
+	shortestPath(map, rows, cols);
 
 	//delete map
 	for (int i = 0; i < rows; i++)
